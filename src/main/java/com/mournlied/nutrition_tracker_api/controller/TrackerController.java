@@ -53,7 +53,7 @@ public class TrackerController {
     @GetMapping("/favoritas")
     public ResponseEntity<Page<ObtenerComidaDTO>> obtenerComidasFavoritas(
             @AuthenticationPrincipal Jwt jwt,
-            @PageableDefault(size = 10, page = 0) Pageable paginacion){
+            @PageableDefault(sort = "fechaCreacionComida", direction = Sort.Direction.DESC) Pageable paginacion){
 
         Page<ObtenerComidaDTO> favoritas = comidaService.obtenerListaComidasFavoritas (jwt, paginacion);
 
