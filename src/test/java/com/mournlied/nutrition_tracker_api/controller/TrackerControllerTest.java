@@ -1,6 +1,7 @@
 package com.mournlied.nutrition_tracker_api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mournlied.nutrition_tracker_api.domain.comida.dto.ActualizarComidaDTO;
 import com.mournlied.nutrition_tracker_api.domain.comida.dto.ObtenerComidaDTO;
 import com.mournlied.nutrition_tracker_api.domain.comida.dto.RegistroComidaDTO;
 import com.mournlied.nutrition_tracker_api.infra.errores.TratadorDeErrores;
@@ -36,8 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TrackerController.class)
@@ -131,7 +131,7 @@ class TrackerControllerTest {
 
     @Test
     @WithMockUser
-    void testObtenerListaComidas_sinParams_debeRetornar200YPageDeUltimos7DiasConPaginacionPorDefecto() throws Exception{
+    void testObtenerListaComidas_sinParams_debeRetornar200YPaginacionPorDefecto() throws Exception{
 
         ObtenerComidaDTO comidaDTO = new ObtenerComidaDTO(
                 "test",
@@ -168,5 +168,226 @@ class TrackerControllerTest {
         assertNull(startCaptor.getValue());
         assertNull(endCaptor.getValue());
         assertEquals(pageableCaptor.getValue(),PageRequest.of(0,10, Sort.by("fechaCreacionComida").descending()));
+    }
+
+    @Test
+    @WithMockUser
+    void testObtenerListaComidas_conParamsStartDateYEndDate_debeRetornar200YObtenerParametrosCorrectos() throws Exception{
+
+        ObtenerComidaDTO comidaDTO = new ObtenerComidaDTO(
+                "test",
+                LocalDate.of(2025,6,20),
+                500,
+                "test",
+                "test",
+                Collections.emptyMap()
+        );
+
+        Page<ObtenerComidaDTO> pageDTO = new PageImpl<>(
+                List.of(comidaDTO,comidaDTO,comidaDTO),
+                PageRequest.of(0,10, Sort.by("fechaCreacionComida").descending()),
+                3);
+
+        when(comidaService.obtenerListaComidas(any(Jwt.class),any(Pageable.class),any(LocalDate.class),any(LocalDate.class)))
+                .thenReturn(pageDTO);
+
+        mockMvc.perform(get("/api/tracker/historial?startDate=2025-06-01&endDate=2025-06-08")
+                        .with(jwt())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<LocalDate> startCaptor = ArgumentCaptor.forClass(LocalDate.class);
+        ArgumentCaptor<LocalDate> endCaptor = ArgumentCaptor.forClass(LocalDate.class);
+
+        verify(comidaService).obtenerListaComidas(any(Jwt.class), any(Pageable.class), startCaptor.capture(), endCaptor.capture());
+
+        assertEquals(startCaptor.getValue(), LocalDate.of(2025,6,1));
+        assertEquals(endCaptor.getValue(), LocalDate.of(2025,6,8));
+    }
+
+    @Test
+    @WithMockUser
+    void testObtenerListaComidas_conPaginacion_debeRetornar200YObtenerPaginacionCorrecta() throws Exception{
+
+        ObtenerComidaDTO comidaDTO = new ObtenerComidaDTO(
+                "test",
+                LocalDate.of(2025,6,20),
+                500,
+                "test",
+                "test",
+                Collections.emptyMap()
+        );
+
+        Page<ObtenerComidaDTO> pageDTO = new PageImpl<>(
+                List.of(comidaDTO,comidaDTO,comidaDTO),
+                PageRequest.of(2,1, Sort.by("cantidadEnGramos").ascending()),
+                3);
+
+        when(comidaService.obtenerListaComidas(any(Jwt.class),any(Pageable.class),any(),any()))
+                .thenReturn(pageDTO);
+
+        mockMvc.perform(get("/api/tracker/historial?page=2&size=1&sort=cantidadEnGramos,ASC")
+                        .with(jwt())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+
+        verify(comidaService).obtenerListaComidas(any(Jwt.class), pageableCaptor.capture(), any(), any());
+
+        assertEquals(pageableCaptor.getValue(),PageRequest.of(
+                                                    2,
+                                                    1,
+                                                    Sort.by("cantidadEnGramos").ascending()));
+    }
+
+    @Test
+    @WithMockUser
+    void testObtenerListaComidasFavoritas_sinParams_debeRetornar200YPaginacionPorDefecto() throws Exception{
+
+        ObtenerComidaDTO comidaDTO = new ObtenerComidaDTO(
+                "test",
+                LocalDate.of(2025,6,20),
+                500,
+                "test",
+                "test",
+                Collections.emptyMap()
+        );
+
+        Page<ObtenerComidaDTO> pageDTO = new PageImpl<>(
+                List.of(comidaDTO,comidaDTO,comidaDTO),
+                PageRequest.of(0,10, Sort.by("fechaCreacionComida").descending()),
+                3);
+
+        when(comidaService.obtenerListaComidasFavoritas(any(Jwt.class),any(Pageable.class)))
+                .thenReturn(pageDTO);
+
+        mockMvc.perform(get("/api/tracker/favoritas")
+                        .with(jwt())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(3)))
+                .andExpect(jsonPath("$.pageable.pageNumber").value(0))
+                .andExpect(jsonPath("$.pageable.pageSize").value(10))
+                .andExpect(jsonPath("$.content[0].nombreComida").value("test"));
+
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+
+        verify(comidaService).obtenerListaComidasFavoritas(any(Jwt.class), pageableCaptor.capture());
+
+        assertEquals(pageableCaptor.getValue(),PageRequest.of(0,10, Sort.by("fechaCreacionComida").descending()));
+    }
+
+    @Test
+    @WithMockUser
+    void testObtenerListaComidasFavoritas_conPaginacion_debeRetornar200YObtenerPaginacionCorrecta() throws Exception{
+
+        ObtenerComidaDTO comidaDTO = new ObtenerComidaDTO(
+                "test",
+                LocalDate.of(2025,6,20),
+                500,
+                "test",
+                "test",
+                Collections.emptyMap()
+        );
+
+        Page<ObtenerComidaDTO> pageDTO = new PageImpl<>(
+                List.of(comidaDTO,comidaDTO,comidaDTO),
+                PageRequest.of(2,1, Sort.by("nombreComida").ascending()),
+                3);
+
+        when(comidaService.obtenerListaComidasFavoritas(any(Jwt.class),any(Pageable.class)))
+                .thenReturn(pageDTO);
+
+        mockMvc.perform(get("/api/tracker/favoritas?page=2&size=1&sort=nombreComida,ASC")
+                        .with(jwt())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+
+        verify(comidaService).obtenerListaComidasFavoritas(any(Jwt.class), pageableCaptor.capture());
+
+        assertEquals(pageableCaptor.getValue(),PageRequest.of(2,1, Sort.by("nombreComida").ascending()));
+    }
+
+    @Test
+    @WithMockUser
+    void testActualizarComida_requestValida_debeRetornar200YComidaActualizada() throws Exception{
+
+        ActualizarComidaDTO requestDTO = new ActualizarComidaDTO(
+                "original test",
+                "test nuevo",
+                500,
+                "test",
+                "test",
+                Map.of("test key","test value"),
+                true);
+
+        ObtenerComidaDTO dtoSalida = new ObtenerComidaDTO(
+                "test nuevo",
+                LocalDate.of(2025,6,20),
+                500,
+                "test",
+                "test",
+                Map.of("test key","test value"));
+
+        when(comidaService.actualizarComida(requestDTO)).thenReturn(dtoSalida);
+
+        mockMvc.perform(patch("/api/tracker/actualizar-entrada")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO))
+                        .with(jwt()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombreComida").value("test nuevo"))
+                .andExpect(jsonPath("$.informacionNutricional").isMap());
+
+        verify(comidaService).actualizarComida(requestDTO);
+    }
+
+    @Test
+    @WithMockUser
+    void testActualizarComida_requestInvalida_debeRetornar400() throws Exception{
+
+        ActualizarComidaDTO requestDTO = new ActualizarComidaDTO(
+                "",
+                "test nuevo",
+                500,
+                "test",
+                "test",
+                Map.of("test key","test value"),
+                true);
+
+        mockMvc.perform(patch("/api/tracker/actualizar-entrada")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO))
+                        .with(jwt()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[?(@.dato == 'nombreComidaOriginal')].error").value("must not be blank"));
+    }
+
+    @Test
+    @WithMockUser
+    void testEliminarComida_requestValida_debeRetornar200() throws Exception{
+
+        mockMvc.perform(delete("/api/tracker/eliminar-entrada?nombreComida=test")
+                            .with(jwt()))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<String> nombreCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(comidaService).eliminarComida(nombreCaptor.capture());
+
+        assertEquals("test", nombreCaptor.getValue());
+    }
+
+    @Test
+    @WithMockUser
+    void testEliminarComida_requestInvalida_debeRetornar400() throws Exception{
+
+        mockMvc.perform(delete("/api/tracker/eliminar-entrada?nombreComida=")
+                        .with(jwt()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("eliminarComida.nombreComida: must not be blank"));
     }
 }
