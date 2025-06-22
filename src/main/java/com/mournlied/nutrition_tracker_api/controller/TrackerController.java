@@ -63,13 +63,11 @@ public class TrackerController {
     @PatchMapping("/actualizar-entrada")
     public ResponseEntity<ObtenerComidaDTO> actualizarComida (@RequestBody @Valid ActualizarComidaDTO actualizarComidaDTO){
 
-        ObtenerComidaDTO comidaActualizada = comidaService.actualizarComida(actualizarComidaDTO);
-
-        return  ResponseEntity.ok(comidaActualizada);
+        return  ResponseEntity.ok(comidaService.actualizarComida(actualizarComidaDTO));
     }
 
     @DeleteMapping("/eliminar-entrada")
-    public ResponseEntity<Void> eliminarComida (@RequestBody @NotBlank String nombreComida){
+    public ResponseEntity<Void> eliminarComida (@RequestParam @NotBlank String nombreComida){
 
         comidaService.eliminarComida(nombreComida);
 
