@@ -33,9 +33,7 @@ public class TrackerController {
     public ResponseEntity<ObtenerComidaDTO> registrarNuevaComida(
             @AuthenticationPrincipal Jwt jwt, @RequestBody @Valid RegistroComidaDTO registroComidaDTO){
 
-        ObtenerComidaDTO nuevaComida = comidaService.registrarNuevaComida(jwt, registroComidaDTO);
-
-        return ResponseEntity.ok(nuevaComida);
+        return ResponseEntity.ok(comidaService.registrarNuevaComida(jwt, registroComidaDTO));
     }
 
     @GetMapping("/historial")
@@ -45,9 +43,7 @@ public class TrackerController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
-        Page<ObtenerComidaDTO> comidas = comidaService.obtenerListaComidas(jwt, paginacion, startDate, endDate);
-
-        return ResponseEntity.ok(comidas);
+        return ResponseEntity.ok(comidaService.obtenerListaComidas(jwt, paginacion, startDate, endDate));
     }
 
     @GetMapping("/favoritas")
@@ -55,9 +51,7 @@ public class TrackerController {
             @AuthenticationPrincipal Jwt jwt,
             @PageableDefault(sort = "fechaCreacionComida", direction = Sort.Direction.DESC) Pageable paginacion){
 
-        Page<ObtenerComidaDTO> favoritas = comidaService.obtenerListaComidasFavoritas (jwt, paginacion);
-
-        return ResponseEntity.ok(favoritas);
+        return ResponseEntity.ok(comidaService.obtenerListaComidasFavoritas (jwt, paginacion));
     }
 
     @PatchMapping("/actualizar-entrada")
