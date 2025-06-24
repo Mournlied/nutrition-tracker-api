@@ -43,17 +43,13 @@ public class UserService {
 
     public ObtenerUserDTO obtenerUserPorId (Long id, Authentication authentication) {
 
-        validarIdPerteneceAUserAutenticado(id, authentication);
-
-        return new ObtenerUserDTO(obtenerUserDesdeUserId(id));
+        return new ObtenerUserDTO(validarIdPerteneceAUserAutenticado(id, authentication));
     }
 
     @Transactional
     public void eliminarUser(Long id, Authentication authentication) {
 
-        validarIdPerteneceAUserAutenticado(id, authentication);
-
-        userRepository.delete(obtenerUserDesdeUserId(id));
+        userRepository.delete(validarIdPerteneceAUserAutenticado(id, authentication));
     }
 
     public Page<ObtenerUserAdminRequestDTO> obtenerAllUsers (Pageable paginacion){
@@ -104,7 +100,7 @@ public class UserService {
         return user.get();
     }
 
-    private void validarIdPerteneceAUserAutenticado(Long id, Authentication authentication){
+    private User validarIdPerteneceAUserAutenticado(Long id, Authentication authentication){
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
 
@@ -112,8 +108,12 @@ public class UserService {
 
         var userLoggeado = userRepository.findUserByCorreo(correoLoggeado);
 
-        if (userLoggeado.isPresent() && userLoggeado.get().getUserId().equals(id)) {
+        if (userLoggeado.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no existe");}
+
+        if (!userLoggeado.get().getUserId().equals(id)) {
             throw new AccessDeniedException("Id no corresponde a la cuenta ingresada actualmente");
         }
+
+        return userLoggeado.get();
     }
 }
