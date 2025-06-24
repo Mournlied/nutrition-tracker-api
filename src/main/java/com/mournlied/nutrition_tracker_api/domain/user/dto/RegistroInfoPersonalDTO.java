@@ -4,11 +4,13 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-@NotNull
 public record RegistroInfoPersonalDTO(
+        @NotNull
         Integer pesoInicial,
         String nombre,
+        @NotNull
         LocalDate nacimiento,
+        @NotNull
         Integer altura,
         String objetivos) {
 }
