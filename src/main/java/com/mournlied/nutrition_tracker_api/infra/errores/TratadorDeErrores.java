@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -33,6 +34,11 @@ public class TratadorDeErrores {
     @ExceptionHandler(ObjetoRequeridoNoEncontrado.class)
     public ResponseEntity<String> tratarError400ObjetoRequeridoNoEncontrado(ObjetoRequeridoNoEncontrado e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> tratarNullBody(HttpMessageNotReadableException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Required request body is missing");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
