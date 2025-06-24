@@ -34,7 +34,7 @@ public class UserService {
     public UserCreadoDTO crearUser(Authentication authentication) {
 
         User user = validaYCreaUserDesdeAutenticacion(authentication);
-        Rol rol = rolRepository.findById(1L).orElseThrow(()-> new IllegalStateException("Rol 1L no encontrado"));
+        Rol rol = rolRepository.findById(1).orElseThrow(()-> new IllegalStateException("Rol 1L no encontrado"));
         user.setRol(rol);
 
         userRepository.save(user);
