@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,7 +48,7 @@ public class InfoPersonalController {
     @PatchMapping("/historial-peso")
     public ResponseEntity<Page<ObtenerHistorialPesoDTO>> actualizarHistorialPeso(
             @AuthenticationPrincipal Jwt jwt,
-            @PageableDefault(size = 7, page = 0) Pageable paginacion,
+            @PageableDefault(size = 7, sort = "fechaActual", direction = Sort.Direction.DESC) Pageable paginacion,
             @RequestBody @Valid @NotNull RegistroHistorialPesoDTO registroHistorialPesoDTO){
 
         Page<ObtenerHistorialPesoDTO> historialPeso = personalService.actualizarHistorialPeso(
@@ -59,7 +60,7 @@ public class InfoPersonalController {
     @GetMapping("/historial-peso")
     public ResponseEntity<Page<ObtenerHistorialPesoDTO>> obtenerHistorialPeso(
             @AuthenticationPrincipal Jwt jwt,
-            @PageableDefault(size = 7, page = 0) Pageable paginacion){
+            @PageableDefault(size = 7, sort = "fechaActual", direction = Sort.Direction.DESC) Pageable paginacion){
 
         return ResponseEntity.ok(personalService.obtenerHistorialPeso(jwt,paginacion));
     }
