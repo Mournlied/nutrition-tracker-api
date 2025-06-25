@@ -60,11 +60,13 @@ public class UserService {
     @Transactional
     public ObtenerUserAdminRequestDTO actualizarUser(Long id, ActualizarUserDTO modDTO) {
 
-        var rolNuevo = rolRepository.findRolByRolId(modDTO.rolId());
-        if (rolNuevo.isEmpty()){throw new ObjetoRequeridoNoEncontrado("Rol no existe");}
-
         User userInDB = obtenerUserDesdeUserId(id);
-        if (!(modDTO.rolId()==null)) {userInDB.setRol(rolNuevo.get());}
+
+        if (!(modDTO.rolId()==null)) {
+            var rolNuevo = rolRepository.findRolByRolId(modDTO.rolId());
+            if (rolNuevo.isEmpty()){throw new ObjetoRequeridoNoEncontrado("Rol no existe");}
+            userInDB.setRol(rolNuevo.get());
+        }
         if (!(modDTO.estado()==null)){userInDB.setEstado(modDTO.estado());}
 
         return new ObtenerUserAdminRequestDTO(userInDB);
