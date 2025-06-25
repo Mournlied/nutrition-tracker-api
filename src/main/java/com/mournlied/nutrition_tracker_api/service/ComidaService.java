@@ -34,10 +34,10 @@ public class ComidaService {
 
         Long userId = obtenerUserDesdeJwt(jwt).getUserId();
 
-        ajustaFechasParaBusqueda(startDate,endDate);
+        RangoFechas fechas = ajustaFechasParaBusqueda(startDate,endDate);
 
-        return comidaRepository.findByUserUserIdAndFechaCreacionComidaBetween(userId,startDate, endDate, paginacion)
-                .map(ObtenerComidaDTO::new);
+        return comidaRepository.findByUserUserIdAndFechaCreacionComidaBetween(
+                userId, fechas.startDate, fechas.endDate, paginacion).map(ObtenerComidaDTO::new);
     }
 
     public ObtenerComidaDTO registrarNuevaComida(Jwt jwt, @Valid RegistroComidaDTO registroComidaDTO) {
@@ -120,7 +120,7 @@ public class ComidaService {
         }
     }
 
-    private void ajustaFechasParaBusqueda(LocalDate startDate, LocalDate endDate){
+    private RangoFechas ajustaFechasParaBusqueda(LocalDate startDate, LocalDate endDate){
 
         if (endDate == null){
             endDate = LocalDate.now();
@@ -129,6 +129,9 @@ public class ComidaService {
         if (startDate == null){
             startDate = endDate.minusDays(6);
         }
+
+        return new RangoFechas(startDate, endDate);
     }
 
+    private record RangoFechas(LocalDate startDate, LocalDate endDate) {}
 }
