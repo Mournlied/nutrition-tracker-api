@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -43,6 +44,7 @@ public class InformacionPersonal {
 
     public InformacionPersonal(RegistroInfoPersonalDTO registroDTO, User user) {
         this.user = user;
+        this.historialPeso = Collections.emptyList();
         this.pesoInicial = registroDTO.pesoInicial();
         this.nombre = registroDTO.nombre();
         this.nacimiento = registroDTO.nacimiento();
