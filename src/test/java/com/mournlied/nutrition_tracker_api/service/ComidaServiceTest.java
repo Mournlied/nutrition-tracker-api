@@ -213,7 +213,7 @@ class ComidaServiceTest {
                 false
         );
 
-        when(comidaRepository.findByNombrecomida("test")).thenReturn(Optional.of(comidaDB));
+        when(comidaRepository.findByNombreComida("test")).thenReturn(Optional.of(comidaDB));
 
         ObtenerComidaDTO salidaDTO = comidaService.actualizarComida(entradaDTO);
 
@@ -236,7 +236,7 @@ class ComidaServiceTest {
                 null
         );
 
-        when(comidaRepository.findByNombrecomida("test")).thenReturn(Optional.of(comidaDB));
+        when(comidaRepository.findByNombreComida("test")).thenReturn(Optional.of(comidaDB));
 
         ObtenerComidaDTO salidaDTO = comidaService.actualizarComida(entradaDTO);
 
@@ -261,7 +261,7 @@ class ComidaServiceTest {
                 null
         );
 
-        when(comidaRepository.findByNombrecomida("test")).thenReturn(Optional.of(comidaDB));
+        when(comidaRepository.findByNombreComida("test")).thenReturn(Optional.of(comidaDB));
 
         ObtenerComidaDTO salidaDTO = comidaService.actualizarComida(entradaDTO);
 
@@ -276,7 +276,7 @@ class ComidaServiceTest {
     @Test
     void testEliminarComida_comidaExiste_debeEliminarComida(){
 
-        when(comidaRepository.findByNombrecomida("test")).thenReturn(Optional.of(comidaDB));
+        when(comidaRepository.findByNombreComida("test")).thenReturn(Optional.of(comidaDB));
 
         comidaService.eliminarComida("test");
 
@@ -286,7 +286,7 @@ class ComidaServiceTest {
     @Test
     void testHelper_comidaNoExiste_debeLanzarExcepcion(){
 
-        when(comidaRepository.findByNombrecomida("test")).thenReturn(Optional.empty());
+        when(comidaRepository.findByNombreComida("test")).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> comidaService.eliminarComida("test"));
     }

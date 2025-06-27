@@ -21,5 +21,5 @@ public interface ComidaRepository extends JpaRepository<Comida,Long> {
 
     Page<Comida> findByUserUserIdAndEsFavoritaTrue(Long userId, Pageable pageable);
 
-    Optional<Comida> findByNombrecomida(String nombreComida);
+    Optional<Comida> findByNombreComida(String nombreComida);
 }

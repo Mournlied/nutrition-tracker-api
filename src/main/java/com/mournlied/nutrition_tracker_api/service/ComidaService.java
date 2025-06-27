@@ -87,7 +87,7 @@ public class ComidaService {
 
     private Comida obtenerComidaConNombreComida(String nombreComida){
 
-        var comidaDB = comidaRepository.findByNombrecomida(nombreComida);
+        var comidaDB = comidaRepository.findByNombreComida(nombreComida);
 
         if (comidaDB.isEmpty()){throw new EntityNotFoundException("comida no existe");}
 
