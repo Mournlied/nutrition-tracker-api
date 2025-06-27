@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface RolRepository extends JpaRepository<Rol,Integer> {
+
     @Query("""
     SELECT DISTINCT r FROM Rol r
     LEFT JOIN FETCH r.permisos
