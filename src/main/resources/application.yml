@@ -9,7 +9,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${auth0.issuer:}
+          issuer-uri: ${OAUTH2_ISSUER:}
 
   jpa:
     hibernate:
