@@ -46,7 +46,7 @@ public class CustomJwtRoleAndPermissionConverter implements Converter<Jwt, Colle
 
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
-        String correo = jwt.getClaimAsString("correo");
+        String correo = jwt.getClaimAsString("email");
 
         if (correo == null) return List.of();
 
