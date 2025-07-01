@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/testdb
+    username: test_user
+    password: test_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+
+security:
+  oauth2:
+    resourceserver:
+      jwt:
+        issuer-uri: http://mock-jwt-server
