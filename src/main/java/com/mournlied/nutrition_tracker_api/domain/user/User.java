@@ -28,6 +28,7 @@ public class User {
 
     @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
+    @Setter
     private InformacionPersonal infoPersonal;
 
     @ManyToOne(fetch = FetchType.EAGER)

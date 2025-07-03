@@ -1,5 +1,6 @@
 package com.mournlied.nutrition_tracker_api.service;
 
+import com.mournlied.nutrition_tracker_api.domain.user.InformacionPersonal;
 import com.mournlied.nutrition_tracker_api.domain.user.Rol;
 import com.mournlied.nutrition_tracker_api.domain.user.User;
 import com.mournlied.nutrition_tracker_api.domain.user.dto.ActualizarUserDTO;
@@ -38,6 +39,8 @@ public class UserService {
         user.setRol(rol);
 
         userRepository.save(user);
+        user.setInfoPersonal(new InformacionPersonal(user));
+
         return new UserCreadoDTO(user);
     }
 

@@ -42,6 +42,16 @@ public class InformacionPersonal {
     @Setter
     private String objetivos;
 
+    public InformacionPersonal(User user) {
+        this.user = user;
+        this.historialPeso = Collections.emptyList();
+        this.pesoInicial = 0;
+        this.nombre = "";
+        this.nacimiento = LocalDate.now();
+        this.altura = 0;
+        this.objetivos = "";
+    }
+
     public InformacionPersonal(RegistroInfoPersonalDTO registroDTO, User user) {
         this.user = user;
         this.historialPeso = Collections.emptyList();
