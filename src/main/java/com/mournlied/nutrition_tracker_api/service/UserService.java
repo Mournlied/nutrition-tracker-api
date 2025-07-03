@@ -113,7 +113,7 @@ public class UserService {
 
         var userLoggeado = userRepository.findUserByCorreo(correoLoggeado);
 
-        if (userLoggeado.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no existe");}
+        if (userLoggeado.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no registrada/o");}
 
         if (!userLoggeado.get().getUserId().equals(id)) {
             throw new AccessDeniedException("Id no corresponde a la cuenta ingresada actualmente");
