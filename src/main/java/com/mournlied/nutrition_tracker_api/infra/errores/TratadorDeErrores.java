@@ -48,7 +48,7 @@ public class TratadorDeErrores {
     }
 
     @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<String> tratarExcepcionDeSeguridad400(SecurityException e) {
+    public ResponseEntity<String> tratarExcepcionDeSeguridad401(SecurityException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
