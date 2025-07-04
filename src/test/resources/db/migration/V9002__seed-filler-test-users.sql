@@ -5,7 +5,7 @@ SELECT
     1,
     CURRENT_DATE
 FROM
-    generate_series(1, 9) x,
+    generate_series(2, 9) x,
     roles r
 WHERE
     r.nombre_rol = 'USER';
