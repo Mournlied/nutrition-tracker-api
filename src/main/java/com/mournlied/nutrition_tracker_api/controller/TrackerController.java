@@ -31,7 +31,7 @@ public class TrackerController {
         this.comidaService = comidaService;
     }
 
-    @PostMapping("/nueva-entrada")
+    @PostMapping("/comida")
     public ResponseEntity<ObtenerComidaDTO> registrarNuevaComida(
             @AuthenticationPrincipal Jwt jwt, @RequestBody @Valid RegistroComidaDTO registroComidaDTO){
 
@@ -56,13 +56,13 @@ public class TrackerController {
         return ResponseEntity.ok(comidaService.obtenerListaComidasFavoritas (jwt, paginacion));
     }
 
-    @PatchMapping("/actualizar-entrada")
+    @PatchMapping("/comida")
     public ResponseEntity<ObtenerComidaDTO> actualizarComida (@RequestBody @Valid ActualizarComidaDTO actualizarComidaDTO){
 
         return  ResponseEntity.ok(comidaService.actualizarComida(actualizarComidaDTO));
     }
 
-    @DeleteMapping("/eliminar-entrada")
+    @DeleteMapping("/comida")
     public ResponseEntity<Void> eliminarComida (@RequestParam @NotBlank String nombreComida){
 
         comidaService.eliminarComida(nombreComida);
