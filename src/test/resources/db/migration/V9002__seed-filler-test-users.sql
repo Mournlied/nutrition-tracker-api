@@ -2,7 +2,7 @@ INSERT INTO users (correo, rol_id, estado, user_creacion)
 SELECT
     'user' || x || '@mournlied.com',
     r.rol_id,
-    1,
+    0,
     CURRENT_DATE
 FROM
     generate_series(2, 9) x,
