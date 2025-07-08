@@ -7,6 +7,7 @@ import com.mournlied.nutrition_tracker_api.domain.comida.dto.RegistroComidaDTO;
 import com.mournlied.nutrition_tracker_api.service.ComidaService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,7 +34,7 @@ public class TrackerController {
 
     @PostMapping("/comida")
     public ResponseEntity<ObtenerComidaDTO> registrarNuevaComida(
-            @AuthenticationPrincipal Jwt jwt, @RequestBody @Valid RegistroComidaDTO registroComidaDTO){
+            @AuthenticationPrincipal Jwt jwt, @RequestBody @Valid @NotNull RegistroComidaDTO registroComidaDTO){
 
         return ResponseEntity.ok(comidaService.registrarNuevaComida(jwt, registroComidaDTO));
     }
