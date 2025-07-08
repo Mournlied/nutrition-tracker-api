@@ -11,6 +11,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 @Service
+@Slf4j
 public class ComidaService {
 
     private final ComidaRepository comidaRepository;
@@ -32,18 +35,24 @@ public class ComidaService {
     public Page<ObtenerComidaDTO> obtenerListaComidas(Jwt jwt, Pageable paginacion,
                                                       LocalDate startDate, LocalDate endDate) {
 
+        log.debug("Request ID {}", MDC.get("requestId"));
+
         Long userId = obtenerUserDesdeJwt(jwt).getUserId();
 
         RangoFechas fechas = ajustaFechasParaBusqueda(startDate,endDate);
 
+        log.info("Obteniendo lista de comidas");
         return comidaRepository.findByUserUserIdAndFechaCreacionComidaBetween(
                 userId, fechas.startDate, fechas.endDate, paginacion).map(ObtenerComidaDTO::new);
     }
 
     public ObtenerComidaDTO registrarNuevaComida(Jwt jwt, @Valid RegistroComidaDTO registroComidaDTO) {
 
+        log.debug("Request ID {}", MDC.get("requestId"));
+
         User user = obtenerUserDesdeJwt(jwt);
 
+        log.info("Creando nueva comida: {}", registroComidaDTO.nombreComida());
         Comida nuevaComida = new Comida(registroComidaDTO, user);
         comidaRepository.save(nuevaComida);
 
@@ -52,16 +61,22 @@ public class ComidaService {
 
     public Page<ObtenerComidaDTO> obtenerListaComidasFavoritas(Jwt jwt, Pageable paginacion) {
 
+        log.debug("Request ID {}", MDC.get("requestId"));
+
         Long userId = obtenerUserDesdeJwt(jwt).getUserId();
 
+        log.info("Obteniendo lista de comidas favoritas");
         return comidaRepository.findByUserUserIdAndEsFavoritaTrue(userId,paginacion).map(ObtenerComidaDTO::new);
     }
 
     @Transactional
     public ObtenerComidaDTO actualizarComida(ActualizarComidaDTO actualizarComidaDTO) {
 
+        log.debug("Request ID {}", MDC.get("requestId"));
+
         String nombreComida = actualizarComidaDTO.nombreComidaOriginal();
 
+        log.info("Actualizando comida: {}", nombreComida);
         Comida comida = obtenerComidaConNombreComida(nombreComida);
 
         patchComidaDesdeDto(comida, actualizarComidaDTO);
@@ -71,6 +86,8 @@ public class ComidaService {
 
     public void eliminarComida(@NotBlank String nombreComida) {
 
+        log.debug("Request ID {}", MDC.get("requestId"));
+        log.info("Eliminando comida: {}", nombreComida);
         comidaRepository.delete(obtenerComidaConNombreComida(nombreComida));
     }
 
@@ -78,6 +95,7 @@ public class ComidaService {
 
         String correoToken = jwt.getClaimAsString("email");
 
+        log.debug("Consultando DB por correo: {}", correoToken);
         var user = userRepository.findUserByCorreo(correoToken);
 
         if (user.isEmpty()){throw new EntityNotFoundException("User no existe");}
@@ -87,6 +105,7 @@ public class ComidaService {
 
     private Comida obtenerComidaConNombreComida(String nombreComida){
 
+        log.debug("Consultando DB por comida: {}", nombreComida);
         var comidaDB = comidaRepository.findByNombreComida(nombreComida);
 
         if (comidaDB.isEmpty()){throw new EntityNotFoundException("comida no existe");}
