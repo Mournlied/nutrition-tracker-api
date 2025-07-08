@@ -12,6 +12,8 @@ import com.mournlied.nutrition_tracker_api.infra.errores.ValidacionDeIntegridad;
 import com.mournlied.nutrition_tracker_api.repository.RolRepository;
 import com.mournlied.nutrition_tracker_api.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,6 +22,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -34,10 +37,13 @@ public class UserService {
     @Transactional
     public UserCreadoDTO crearUser(Authentication authentication) {
 
+        log.info("Request ID {}", MDC.get("requestId"));
         User user = validaYCreaUserDesdeAutenticacion(authentication);
+        log.debug("Consultando DB por rol id: 1");
         Rol rol = rolRepository.findById(1).orElseThrow(()-> new IllegalStateException("Rol 1L no encontrado"));
         user.setRol(rol);
 
+        log.info("Creando user");
         userRepository.save(user);
         user.setInfoPersonal(new InformacionPersonal(user));
 
@@ -46,26 +52,35 @@ public class UserService {
 
     public ObtenerUserDTO obtenerUserPorId (Long id, Authentication authentication) {
 
+        log.info("Request ID {}", MDC.get("requestId"));
+        log.info("Obteniendo user id: {}", id);
         return new ObtenerUserDTO(validarIdPerteneceAUserAutenticado(id, authentication));
     }
 
     @Transactional
     public void eliminarUser(Long id, Authentication authentication) {
 
+        log.info("Request ID {}", MDC.get("requestId"));
+        log.info("Eliminando user id: {}", id);
         userRepository.delete(validarIdPerteneceAUserAutenticado(id, authentication));
     }
 
     public Page<ObtenerUserAdminRequestDTO> obtenerAllUsers (Pageable paginacion){
 
+        log.info("Request ID {}", MDC.get("requestId"));
+        log.info("Obteniendo lista de users");
         return userRepository.findAll(paginacion).map(ObtenerUserAdminRequestDTO::new);
     }
 
     @Transactional
     public ObtenerUserAdminRequestDTO actualizarUser(Long id, ActualizarUserDTO modDTO) {
 
+        log.info("Request ID {}", MDC.get("requestId"));
         User userInDB = obtenerUserDesdeUserId(id);
 
+        log.info("Actualizando user id: {}", id);
         if (!(modDTO.rolId()==null)) {
+            log.debug("Consultando DB por rol id: {}", modDTO.rolId());
             var rolNuevo = rolRepository.findRolByRolId(modDTO.rolId());
             if (rolNuevo.isEmpty()){throw new ObjetoRequeridoNoEncontrado("Rol no existe");}
             userInDB.setRol(rolNuevo.get());
@@ -78,6 +93,8 @@ public class UserService {
     @Transactional
     public void eliminarUserAdmins(Long id) {
 
+        log.info("Request ID {}", MDC.get("requestId"));
+        log.info("Eliminando user id: {}", id);
         userRepository.delete(obtenerUserDesdeUserId(id));
     }
 
@@ -90,6 +107,7 @@ public class UserService {
 
         String correoToken = jwt.getClaimAsString("email");
 
+        log.debug("Consultando DB por user: {}", correoToken);
         var correo = userRepository.findUserByCorreo(correoToken);
         if (correo.isPresent()){throw new ValidacionDeIntegridad("Correo ya registrado");}
 
@@ -98,6 +116,7 @@ public class UserService {
 
     private User obtenerUserDesdeUserId (Long id){
 
+        log.debug("Consultando DB por user id: {}", id);
         var user = userRepository.findUserByUserId(id);
 
         if (user.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no existe");}
@@ -111,6 +130,7 @@ public class UserService {
 
         String correoLoggeado = jwt.getClaimAsString("email");
 
+        log.debug("Consultando DB por user: {}", correoLoggeado);
         var userLoggeado = userRepository.findUserByCorreo(correoLoggeado);
 
         if (userLoggeado.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no registrada/o");}
