@@ -2,8 +2,10 @@ package com.mournlied.nutrition_tracker_api.domain.comida;
 
 import com.mournlied.nutrition_tracker_api.domain.comida.dto.RegistroComidaDTO;
 import com.mournlied.nutrition_tracker_api.domain.user.User;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
@@ -43,7 +45,7 @@ public class Comida {
     @Setter
     private String tipoComida;
 
-    @Convert(converter = JsonbConverter.class)
+    @Type(JsonType.class)
     @Column(name = "info_nutricional", columnDefinition = "jsonb")
     @Setter
     private Map<String, Object> informacionNutricional;
