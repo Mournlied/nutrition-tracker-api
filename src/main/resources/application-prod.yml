@@ -16,3 +16,6 @@ spring:
 server:
   error:
     include-stacktrace: never
+
+logging:
+  config: classpath:logback-spring.xml

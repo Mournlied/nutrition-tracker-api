@@ -8,3 +8,6 @@ spring:
   docker:
     compose:
       enabled: false
+logging:
+  level:
+    com.mournlied.nutrition_tracker_api: DEBUG
