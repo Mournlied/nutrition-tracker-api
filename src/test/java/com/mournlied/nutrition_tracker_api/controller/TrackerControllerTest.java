@@ -83,7 +83,7 @@ class TrackerControllerTest {
 
         when(comidaService.registrarNuevaComida(any(Jwt.class),any(RegistroComidaDTO.class))).thenReturn(dtoSalida);
 
-        mockMvc.perform(post("/api/tracker/nueva-entrada")
+        mockMvc.perform(post("/api/tracker/comida")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registroDTO))
                         .with(jwt()))
@@ -110,7 +110,7 @@ class TrackerControllerTest {
                 Collections.emptyMap(),
                 null);
 
-        mockMvc.perform(post("/api/tracker/nueva-entrada")
+        mockMvc.perform(post("/api/tracker/comida")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registroDTOinvalido))
                         .with(jwt()))
@@ -125,7 +125,7 @@ class TrackerControllerTest {
     @Test
     void testRegistrarNuevaComida_requestSinAutenticacion_debeRetornar403() throws Exception{
 
-        mockMvc.perform(post("/api/tracker/nueva-entrada"))
+        mockMvc.perform(post("/api/tracker/comida"))
                 .andExpect(status().isForbidden());
     }
 
@@ -334,7 +334,7 @@ class TrackerControllerTest {
 
         when(comidaService.actualizarComida(requestDTO)).thenReturn(dtoSalida);
 
-        mockMvc.perform(patch("/api/tracker/actualizar-entrada")
+        mockMvc.perform(patch("/api/tracker/comida")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO))
                         .with(jwt()))
@@ -358,7 +358,7 @@ class TrackerControllerTest {
                 Map.of("test key","test value"),
                 true);
 
-        mockMvc.perform(patch("/api/tracker/actualizar-entrada")
+        mockMvc.perform(patch("/api/tracker/comida")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO))
                         .with(jwt()))
@@ -370,7 +370,7 @@ class TrackerControllerTest {
     @WithMockUser
     void testEliminarComida_requestValida_debeRetornar200() throws Exception{
 
-        mockMvc.perform(delete("/api/tracker/eliminar-entrada?nombreComida=test")
+        mockMvc.perform(delete("/api/tracker/comida?nombreComida=test")
                             .with(jwt()))
                 .andExpect(status().isOk());
 
@@ -385,7 +385,7 @@ class TrackerControllerTest {
     @WithMockUser
     void testEliminarComida_requestInvalida_debeRetornar400() throws Exception{
 
-        mockMvc.perform(delete("/api/tracker/eliminar-entrada?nombreComida=")
+        mockMvc.perform(delete("/api/tracker/comida?nombreComida=")
                         .with(jwt()))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("eliminarComida.nombreComida: must not be blank"));
