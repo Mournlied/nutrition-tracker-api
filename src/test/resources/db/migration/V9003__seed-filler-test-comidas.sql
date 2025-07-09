@@ -26,6 +26,7 @@ SELECT
     CASE (s % 2)
             WHEN 0 THEN true
             WHEN 1 THEN false
+        END
 FROM
     generate_series(1, 9) s,
     users u
