@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 
 @RestControllerAdvice
 @Slf4j
-public class TratadorDeErrores {
+public class TratadorDeErrores extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<DatosError> tratarEntidadNoEncontrada404(EntityNotFoundException e, HttpServletRequest request){
@@ -124,6 +125,14 @@ public class TratadorDeErrores {
                 .toList();
         log.warn("MethodArgumentNotValidException on request [{}]: {}", request.getRequestURI(), errores);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<DatosError> erroresNoTratadosDirectamente(Exception e, HttpServletRequest request){
+
+        log.warn("Unhandled Exception on request [{}]: {}", request.getRequestURI(), e.getMessage());
+        String mensaje = "Algo salió mal, verifique su solicitud y vuelva a intentarlo.";
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, mensaje, request);
     }
 
     private ResponseEntity<DatosError> error(HttpStatus status, String mensaje, HttpServletRequest request) {
