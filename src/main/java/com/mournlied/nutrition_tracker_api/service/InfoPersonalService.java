@@ -99,7 +99,7 @@ public class InfoPersonalService {
         log.debug("Consultando DB por user: {}", correoToken);
         var user = userRepository.findUserByCorreo(correoToken);
 
-        if (user.isEmpty()){throw new EntityNotFoundException("User no existe");}
+        if (user.isEmpty()){throw new EntityNotFoundException("User no existe.");}
 
         return user.get();
     }
@@ -109,7 +109,7 @@ public class InfoPersonalService {
         log.debug("Consultando DB por info personal de userId: {}", userId);
         var infoPersonalOpt = personalRepository.findByUserUserId(userId);
 
-        if (infoPersonalOpt.isEmpty()){throw new EntityNotFoundException("user no existe");}
+        if (infoPersonalOpt.isEmpty()){throw new EntityNotFoundException("user no existe.");}
 
         return infoPersonalOpt.get();
     }

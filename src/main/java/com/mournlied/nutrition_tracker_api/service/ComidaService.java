@@ -98,7 +98,7 @@ public class ComidaService {
         log.debug("Consultando DB por correo: {}", correoToken);
         var user = userRepository.findUserByCorreo(correoToken);
 
-        if (user.isEmpty()){throw new EntityNotFoundException("User no existe");}
+        if (user.isEmpty()){throw new EntityNotFoundException("User no existe.");}
 
         return user.get();
     }
@@ -108,7 +108,7 @@ public class ComidaService {
         log.debug("Consultando DB por comida: {}", nombreComida);
         var comidaDB = comidaRepository.findByNombreComida(nombreComida);
 
-        if (comidaDB.isEmpty()){throw new EntityNotFoundException("comida no existe");}
+        if (comidaDB.isEmpty()){throw new EntityNotFoundException("comida no existe.");}
 
         return comidaDB.get();
     }

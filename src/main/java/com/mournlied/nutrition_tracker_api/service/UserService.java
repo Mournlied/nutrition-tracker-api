@@ -40,7 +40,7 @@ public class UserService {
         log.info("Request ID {}", MDC.get("requestId"));
         User user = validaYCreaUserDesdeAutenticacion(authentication);
         log.debug("Consultando DB por rol id: 1");
-        Rol rol = rolRepository.findById(1).orElseThrow(()-> new IllegalStateException("Rol 1L no encontrado"));
+        Rol rol = rolRepository.findById(1).orElseThrow(()-> new IllegalStateException("Rol 1L no encontrado."));
         user.setRol(rol);
 
         log.info("Creando user");
@@ -82,7 +82,7 @@ public class UserService {
         if (!(modDTO.rolId()==null)) {
             log.debug("Consultando DB por rol id: {}", modDTO.rolId());
             var rolNuevo = rolRepository.findRolByRolId(modDTO.rolId());
-            if (rolNuevo.isEmpty()){throw new ObjetoRequeridoNoEncontrado("Rol no existe");}
+            if (rolNuevo.isEmpty()){throw new ObjetoRequeridoNoEncontrado("Rol no existe.");}
             userInDB.setRol(rolNuevo.get());
         }
         if (!(modDTO.estado()==null)){userInDB.setEstado(modDTO.estado());}
@@ -103,13 +103,13 @@ public class UserService {
         Jwt jwt = (Jwt) authentication.getPrincipal();
 
         Boolean verified = jwt.getClaimAsBoolean("email_verified");
-        if (verified == null || !verified) {throw new SecurityException("Primero debe verificar su correo");}
+        if (verified == null || !verified) {throw new SecurityException("Primero debe verificar su correo.");}
 
         String correoToken = jwt.getClaimAsString("email");
 
         log.debug("Consultando DB por user: {}", correoToken);
         var correo = userRepository.findUserByCorreo(correoToken);
-        if (correo.isPresent()){throw new ValidacionDeIntegridad("Correo ya registrado");}
+        if (correo.isPresent()){throw new ValidacionDeIntegridad("Correo ya registrado.");}
 
         return new User(correoToken);
     }
@@ -119,7 +119,7 @@ public class UserService {
         log.debug("Consultando DB por user id: {}", id);
         var user = userRepository.findUserByUserId(id);
 
-        if (user.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no existe");}
+        if (user.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no existe.");}
 
         return user.get();
     }
@@ -133,10 +133,10 @@ public class UserService {
         log.debug("Consultando DB por user: {}", correoLoggeado);
         var userLoggeado = userRepository.findUserByCorreo(correoLoggeado);
 
-        if (userLoggeado.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no registrada/o");}
+        if (userLoggeado.isEmpty()) {throw new ObjetoRequeridoNoEncontrado("User no registrada/o.");}
 
         if (!userLoggeado.get().getUserId().equals(id)) {
-            throw new AccessDeniedException("Id no corresponde a la cuenta ingresada actualmente");
+            throw new AccessDeniedException("Id no corresponde a la cuenta ingresada actualmente.");
         }
 
         return userLoggeado.get();
