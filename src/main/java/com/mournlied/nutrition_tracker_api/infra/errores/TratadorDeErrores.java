@@ -56,8 +56,7 @@ public class TratadorDeErrores {
     public ResponseEntity<DatosError> tratarReferenciaInvalida400(PropertyReferenceException e, HttpServletRequest request) {
 
         log.warn("PropertyReferenceException on request [{}]: {}", request.getRequestURI(), e.getMessage());
-        String mensaje = "Ocurrió un error al procesar la solicitud: uno de los campos proporcionados no es válido.";
-        return error(HttpStatus.BAD_REQUEST, mensaje, request);
+        return error(HttpStatus.BAD_REQUEST, "Uno de los campos proporcionados no es válido.", request);
     }
 
     @ExceptionHandler(ObjetoRequeridoNoEncontrado.class)
