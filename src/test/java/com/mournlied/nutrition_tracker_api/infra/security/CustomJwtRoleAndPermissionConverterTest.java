@@ -36,7 +36,7 @@ class CustomJwtRoleAndPermissionConverterTest {
 
         Jwt jwt = Jwt.withTokenValue("dummy")
                 .header("alg", "none")
-                .claim("correo", "test@example.com")
+                .claim("email", "test@example.com")
                 .build();
 // Rol con 3 autoridades (nombreRol y 2 permisos)
         Rol rol = new Rol(
@@ -79,7 +79,7 @@ class CustomJwtRoleAndPermissionConverterTest {
 
         Jwt jwt = Jwt.withTokenValue("dummy")
                 .header("alg", "none")
-                .claim("correo", "test@example.com")
+                .claim("email", "test@example.com")
                 .build();
 
         when(userRepository.findUserWithRolesAndPermisosByCorreo("test@example.com")).thenReturn(Optional.empty());
@@ -95,7 +95,7 @@ class CustomJwtRoleAndPermissionConverterTest {
 
         Jwt jwt = Jwt.withTokenValue("dummy")
                 .header("alg", "none")
-                .claim("correo", "test@example.com")
+                .claim("email", "test@example.com")
                 .build();
 
         User user = new User(
