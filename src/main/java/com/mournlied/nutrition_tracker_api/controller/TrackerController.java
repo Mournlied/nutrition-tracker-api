@@ -58,7 +58,8 @@ public class TrackerController {
     }
 
     @PatchMapping("/comida")
-    public ResponseEntity<ObtenerComidaDTO> actualizarComida (@RequestBody @Valid ActualizarComidaDTO actualizarComidaDTO){
+    public ResponseEntity<ObtenerComidaDTO> actualizarComida(
+            @RequestBody @Valid @NotNull ActualizarComidaDTO actualizarComidaDTO){
 
         return  ResponseEntity.ok(comidaService.actualizarComida(actualizarComidaDTO));
     }

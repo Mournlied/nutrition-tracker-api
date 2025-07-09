@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Map;
 
-@NotNull
 public record ActualizarComidaDTO(
         @NotBlank
         String nombreComidaOriginal,
