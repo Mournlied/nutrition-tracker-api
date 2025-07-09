@@ -112,7 +112,7 @@ class UserControllerIT {
         mockMvc.perform(post("/api/users")
                         .with(jwt().jwt(jwt)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Primero debe verificar su correo"));
+                .andExpect(jsonPath("$.detail").value("Primero debe verificar su correo."));
     }
 
     @Test
@@ -121,7 +121,7 @@ class UserControllerIT {
         mockMvc.perform(post("/api/users")
                         .with(jwt().jwt(adminJwt)))
                 .andExpect(status().isConflict())
-                .andExpect(content().string("Correo ya registrado"));
+                .andExpect(jsonPath("$.detail").value("Correo ya registrado."));
     }
 
     @Test
@@ -135,7 +135,7 @@ class UserControllerIT {
         mockMvc.perform(post("/api/users")
                         .with(jwt().jwt(testUserJwt)))
                 .andExpect(status().isInternalServerError())
-                .andExpect(content().string("Rol 1L no encontrado"));
+                .andExpect(jsonPath("$.detail").value("Rol 1L no encontrado."));
     }
 
     @Test
@@ -160,7 +160,7 @@ class UserControllerIT {
         mockMvc.perform(get("/api/users/1")
                             .with(jwt().jwt(jwt)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("User no registrada/o"));
+                .andExpect(jsonPath("$.detail").value("User no registrada/o."));
     }
 
     @Test
@@ -169,7 +169,8 @@ class UserControllerIT {
         mockMvc.perform(get("/api/users/1")
                             .with(jwt().jwt(testUserJwt)))
                 .andExpect(status().isForbidden())
-                .andExpect(content().string("Id no corresponde a la cuenta ingresada actualmente"));
+                .andExpect(jsonPath("$.detail")
+                        .value("Id no corresponde a la cuenta ingresada actualmente."));
     }
 
     @Test
@@ -212,7 +213,7 @@ class UserControllerIT {
         mockMvc.perform(get("/api/users/lista")
                             .with(jwt().jwt(testUserJwt)))
                 .andExpect(status().isForbidden())
-                .andExpect(content().string("Access Denied"));
+                .andExpect(jsonPath("$.detail").value("Access Denied"));
     }
 
     @Test
@@ -240,7 +241,8 @@ class UserControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(entradaDTO)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Required request body is missing"));
+                .andExpect(jsonPath("$.detail")
+                        .value("Falta el cuerpo de la solicitud o es inválido."));
     }
 
     @Test
@@ -268,7 +270,7 @@ class UserControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(entradaDTO)))
                 .andExpect(status().isForbidden())
-                .andExpect(content().string("Access Denied"));
+                .andExpect(jsonPath("$.detail").value("Access Denied"));
     }
 
     @Test
@@ -287,6 +289,6 @@ class UserControllerIT {
         mockMvc.perform(delete("/api/users/lista/2")
                             .with(jwt().jwt(testUserJwt)))
                 .andExpect(status().isForbidden())
-                .andExpect(content().string("Access Denied"));
+                .andExpect(jsonPath("$.detail").value("Access Denied"));
     }
 }

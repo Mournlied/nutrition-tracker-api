@@ -115,13 +115,13 @@ class UserControllerTest {
     void testCrearUser_CorreoYaRegistrado_ReturnsConflict() throws Exception {
 
         when(userService.crearUser(any(Authentication.class)))
-                .thenThrow(new ValidacionDeIntegridad("Correo ya registrado"));
+                .thenThrow(new ValidacionDeIntegridad("Correo ya registrado."));
 
         mockMvc.perform(post("/api/users")
                         .with(jwt())
                         .with(csrf()))
                 .andExpect(status().isConflict())
-                .andExpect(content().string("Correo ya registrado"));
+                .andExpect(jsonPath("$.detail").value("Correo ya registrado."));
     }
 
     @Test
@@ -157,12 +157,13 @@ class UserControllerTest {
     void testGetUser_idNoPerteneceAUserLogged_debeRetornar403() throws Exception {
 
         when(userService.obtenerUserPorId(any(Long.class), any(Authentication.class)))
-                .thenThrow(new AccessDeniedException("Id no corresponde a la cuenta ingresada actualmente"));
+                .thenThrow(new AccessDeniedException("Id no corresponde a la cuenta ingresada actualmente."));
 
         mockMvc.perform(get("/api/users/1")
                         .with(csrf()))
                 .andExpect(status().isForbidden())
-                .andExpect(content().string("Id no corresponde a la cuenta ingresada actualmente"));
+                .andExpect(jsonPath("$.detail")
+                        .value("Id no corresponde a la cuenta ingresada actualmente."));
 
         verify(userService).obtenerUserPorId(eq(1L), authCaptor.capture());
         Authentication authenticacionCapturada = authCaptor.getValue();
@@ -174,12 +175,12 @@ class UserControllerTest {
     void testGetUser_idNoExisteEnDB_debeRetornar404() throws Exception {
 
         when(userService.obtenerUserPorId(any(Long.class), any(Authentication.class)))
-                .thenThrow(new EntityNotFoundException("User no existe"));
+                .thenThrow(new EntityNotFoundException("User no existe."));
 
         mockMvc.perform(get("/api/users/1")
                         .with(csrf()))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("User no existe"));
+                .andExpect(jsonPath("$.detail").value("User no existe."));
 
         ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
 
@@ -212,7 +213,8 @@ class UserControllerTest {
                         .with(csrf())
                         .with(jwt()))
                 .andExpect(status().isForbidden())
-                .andExpect(content().string("Id no corresponde a la cuenta ingresada actualmente"));
+                .andExpect(jsonPath("$.detail")
+                        .value("Id no corresponde a la cuenta ingresada actualmente"));
 
         verify(userService).eliminarUser(any(Long.class),any(Authentication.class));
     }
@@ -281,7 +283,7 @@ class UserControllerTest {
     void testActualizarUser_rolIdRequeridoNoExisteEnDB_debeRetornar400() throws Exception{
 
                 when(userService.actualizarUser(any(Long.class),any(ActualizarUserDTO.class)))
-                        .thenThrow(new ObjetoRequeridoNoEncontrado("Rol no existe"));
+                        .thenThrow(new ObjetoRequeridoNoEncontrado("Rol no existe."));
 
         mockMvc.perform(put("/api/users/lista/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -289,7 +291,7 @@ class UserControllerTest {
                         .with(csrf())
                         .with(jwt()))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Rol no existe"));
+                .andExpect(jsonPath("$.detail").value("Rol no existe."));
     }
 
     @Test
@@ -297,7 +299,7 @@ class UserControllerTest {
     void testActualizarUser_userIdNoExisteEnDB_debeRetornar404() throws Exception{
 
         when(userService.actualizarUser(any(Long.class),any(ActualizarUserDTO.class)))
-                .thenThrow(new EntityNotFoundException("User no existe"));
+                .thenThrow(new EntityNotFoundException("User no existe."));
 
         mockMvc.perform(put("/api/users/lista/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -305,7 +307,7 @@ class UserControllerTest {
                         .with(csrf())
                         .with(jwt()))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("User no existe"));
+                .andExpect(jsonPath("$.detail").value("User no existe."));
     }
 
     @Test
@@ -326,14 +328,14 @@ class UserControllerTest {
     @WithMockUser
     void testEliminarUserAdmins_userIdNoExisteEnDB_debeRetornar400() throws Exception{
 
-        doThrow(new ObjetoRequeridoNoEncontrado("User no existe"))
+        doThrow(new ObjetoRequeridoNoEncontrado("User no existe."))
                 .when(userService).eliminarUserAdmins(any(Long.class));
 
         mockMvc.perform(delete("/api/users/lista/1")
                         .with(csrf())
                         .with(jwt()))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("User no existe"));
+                .andExpect(jsonPath("$.detail").value("User no existe."));
 
         verify(userService).eliminarUserAdmins(any(Long.class));
     }

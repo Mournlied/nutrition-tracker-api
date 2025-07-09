@@ -113,11 +113,11 @@ class InfoPersonalControllerTest {
                             .content(objectMapper.writeValueAsString(registroDTO))
                             .with(jwt()))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[?(@.dato == 'pesoInicial')].error")
+                .andExpect(jsonPath("$.detail[?(@.dato == 'pesoInicial')].error")
                         .value("must not be null"))
-                .andExpect(jsonPath("$[?(@.dato == 'nacimiento')].error")
+                .andExpect(jsonPath("$.detail[?(@.dato == 'nacimiento')].error")
                         .value("must not be null"))
-                .andExpect(jsonPath("$[?(@.dato == 'altura')].error")
+                .andExpect(jsonPath("$.detail[?(@.dato == 'altura')].error")
                         .value("must not be null"));
     }
 
@@ -167,7 +167,8 @@ class InfoPersonalControllerTest {
                             .content("null")
                             .with(jwt()))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Required request body is missing"));
+                .andExpect(jsonPath("$.detail")
+                        .value("Falta el cuerpo de la solicitud o es inválido."));
     }
 
     @Test
@@ -200,7 +201,8 @@ class InfoPersonalControllerTest {
         verify(personalService).actualizarHistorialPeso(
                 any(Jwt.class), paginacionCaptor.capture(), registroCaptor.capture());
 
-        assertEquals(PageRequest.of(0,7), paginacionCaptor.getValue());
+        assertEquals(PageRequest.of(0,7, Sort.by("fechaActual").descending()),
+                paginacionCaptor.getValue());
         assertEquals(registroDTO, registroCaptor.getValue());
     }
 
@@ -246,7 +248,8 @@ class InfoPersonalControllerTest {
                             .content("null")
                             .with(jwt()))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Required request body is missing"));
+                .andExpect(jsonPath("$.detail")
+                        .value("Falta el cuerpo de la solicitud o es inválido."));
     }
 
     @Test

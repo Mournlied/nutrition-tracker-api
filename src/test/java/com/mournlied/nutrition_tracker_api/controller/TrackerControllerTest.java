@@ -115,11 +115,16 @@ class TrackerControllerTest {
                         .content(objectMapper.writeValueAsString(registroDTOinvalido))
                         .with(jwt()))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[?(@.dato == 'informacionNutricional')].error").value(hasItem("must not be empty")))
-                .andExpect(jsonPath("$[?(@.dato == 'cantidadEnGramos')].error").value(hasItem("must not be null")))
-                .andExpect(jsonPath("$[?(@.dato == 'esFavorita')].error").value(hasItem("must not be null")))
-                .andExpect(jsonPath("$[?(@.dato == 'nombreComida')].error").value(hasItem("must not be blank")))
-                .andExpect(jsonPath("$[?(@.dato == 'tipoComida')].error").value(hasItem("must not be null")));
+                .andExpect(jsonPath("$.detail[?(@.dato == 'informacionNutricional')].error")
+                        .value(hasItem("must not be empty")))
+                .andExpect(jsonPath("$.detail[?(@.dato == 'cantidadEnGramos')].error")
+                        .value(hasItem("must not be null")))
+                .andExpect(jsonPath("$.detail[?(@.dato == 'esFavorita')].error")
+                        .value(hasItem("must not be null")))
+                .andExpect(jsonPath("$.detail[?(@.dato == 'nombreComida')].error")
+                        .value(hasItem("must not be blank")))
+                .andExpect(jsonPath("$.detail[?(@.dato == 'tipoComida')].error")
+                        .value(hasItem("must not be null")));
     }
 
     @Test
@@ -363,7 +368,8 @@ class TrackerControllerTest {
                         .content(objectMapper.writeValueAsString(requestDTO))
                         .with(jwt()))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[?(@.dato == 'nombreComidaOriginal')].error").value("must not be blank"));
+                .andExpect(jsonPath("$.detail[?(@.dato == 'nombreComidaOriginal')].error")
+                        .value("must not be blank"));
     }
 
     @Test
@@ -388,6 +394,7 @@ class TrackerControllerTest {
         mockMvc.perform(delete("/api/tracker/comida?nombreComida=")
                         .with(jwt()))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("eliminarComida.nombreComida: must not be blank"));
+                .andExpect(jsonPath("$.detail")
+                        .value("eliminarComida.nombreComida: must not be blank"));
     }
 }
