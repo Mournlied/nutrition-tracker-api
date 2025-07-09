@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -51,6 +52,14 @@ public class TratadorDeErrores {
         return error(HttpStatus.UNAUTHORIZED, e.getMessage(), request);
     }
 
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<DatosError> tratarReferenciaInvalida400(PropertyReferenceException e, HttpServletRequest request) {
+
+        log.warn("PropertyReferenceException on request [{}]: {}", request.getRequestURI(), e.getMessage());
+        String mensaje = "Ocurrió un error al procesar la solicitud: uno de los campos proporcionados no es válido.";
+        return error(HttpStatus.BAD_REQUEST, mensaje, request);
+    }
+
     @ExceptionHandler(ObjetoRequeridoNoEncontrado.class)
     public ResponseEntity<DatosError> tratarObjetoRequeridoNoEncontrado400(ObjetoRequeridoNoEncontrado e, HttpServletRequest request) {
 
@@ -62,7 +71,7 @@ public class TratadorDeErrores {
     public ResponseEntity<DatosError> tratarCuerpoInvalido400(HttpMessageNotReadableException e, HttpServletRequest request) {
 
         log.warn("HttpMessageNotReadableException on request [{}]: {}", request.getRequestURI(), e.getMessage());
-        return error(HttpStatus.BAD_REQUEST, "Falta el cuerpo de la solicitud o es inválido", request);
+        return error(HttpStatus.BAD_REQUEST, "Falta el cuerpo de la solicitud o es inválido.", request);
     }
 
     @ExceptionHandler(ValidationException.class)
