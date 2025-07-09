@@ -136,7 +136,7 @@ public class TratadorDeErrores extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                "Falta el cuerpo de la solicitud o es inválido",
+                "Falta el cuerpo de la solicitud o es inválido.",
                 httpRequest.getRequestURI()
         );
 

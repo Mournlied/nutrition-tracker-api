@@ -108,7 +108,7 @@ public class ComidaService {
         log.debug("Consultando DB por comida: {}", nombreComida);
         var comidaDB = comidaRepository.findByNombreComida(nombreComida);
 
-        if (comidaDB.isEmpty()){throw new EntityNotFoundException("comida no existe.");}
+        if (comidaDB.isEmpty()){throw new EntityNotFoundException("Comida no existe.");}
 
         return comidaDB.get();
     }
