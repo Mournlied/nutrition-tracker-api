@@ -1,4 +1,4 @@
-INSERT INTO comidas(user_id, comida_creacion, cantidad_gramos, comida_descripcion, tipo_comida, info_nutricional, nombre_comida)
+INSERT INTO comidas(user_id, comida_creacion, cantidad_gramos, comida_descripcion, tipo_comida, info_nutricional, nombre_comida, es_favorita)
 SELECT
     u.user_id,
     CURRENT_DATE - (s - 1),
@@ -22,7 +22,10 @@ SELECT
                 'trans', (s % 2)
             )
         ),
-    'comida numero ' || s
+    'comida numero ' || s,
+    CASE (s % 2)
+            WHEN 0 THEN true
+            WHEN 1 THEN false
 FROM
     generate_series(1, 9) s,
     users u
