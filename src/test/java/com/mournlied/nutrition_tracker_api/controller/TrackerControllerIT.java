@@ -58,8 +58,6 @@ class TrackerControllerIT {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
     private ComidaRepository comidaRepository;
 
     private final ObjectMapper mapper = new ObjectMapper();
