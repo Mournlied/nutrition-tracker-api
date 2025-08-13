@@ -12,6 +12,7 @@
   <li>Protocolos de seguridad hybrida con Auth0 y la base de datos propia</li>
   <li>Tratamiento de errores y validaciones basados en las reglas de negocio deseadas</li>
   <li>Test Unitarios y de integración</li>
+  <li>Documentacion con Springdoc OpenAPI</li>
 </ul>
 <h2 align="left">Funcionalidades en desarrollo</h2>
 <ul>
@@ -31,6 +32,7 @@
     <li>Spring security</li>
     <li>Spring Data JPA</li>
     <li>Bean Validation with Hibernate validator.</li>
+    <li>Springdoc OpenAPI</li>
   </ul>
   <li>Desarrollo y pruebas con:</li>
   <ul>
