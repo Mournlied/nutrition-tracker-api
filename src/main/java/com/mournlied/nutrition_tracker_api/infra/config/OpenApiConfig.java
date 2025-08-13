@@ -19,15 +19,15 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Nutrition Tracker API")
-                        .description("API for tracking nutrition, weight history, and personal information")
+                        .description("API para hacer seguimiento de comidas y peso")
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Diego Leon")
                                 .email("diego.leon.bnss@gmail.com")
                                 .url("https://github.com/Mournlied/nutrition-tracker-api")))
                 .servers(List.of(
-                        new Server().url("http://localhost:8080").description("Development server"),
-                        new Server().url("https://techparatodxs.com").description("Production server")))
+                        new Server().url("http://localhost:8080").description("Dev server"),
+                        new Server().url("https://techparatodxs.com").description("Prod server")))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("Bearer Authentication",
@@ -35,6 +35,6 @@ public class OpenApiConfig {
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")
-                                        .description("Enter JWT token obtained from Auth0")));
+                                        .description("Ingresar JWT token obtenido desde Auth0")));
     }
 }
